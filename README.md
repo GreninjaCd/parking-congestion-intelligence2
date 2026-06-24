@@ -22,6 +22,7 @@ It ships as a one-command local Streamlit app featuring an interactive MapmyIndi
 2. **"What-If" ROI Simulator for Logistics**: Interactive slider to simulate deploying patrols to the top-N zones. Quantifies exact business value for delivery networks like Flipkart: last-mile delivery hours saved, fuel saved, and CO₂ reduced by clearing specific bottlenecks.
 3. **The Priority Engine & GenAI Briefing**: Ranks the worst zones using an Enforcement Priority Index (Volume + Modeled Impact + Recurrence + Intensity). Generates a natural-language deployment briefing for traffic commanders.
 4. **Patrol Schedule Optimizer**: Doesn't just tell you *where* to go, tells you *when*. Computes the optimal 3-hour patrol window for each zone based on peak day-of-week and hourly violation patterns.
+5. **YOLOv8 Computer Vision Pipeline**: A prototype CV model (`07_cv_pipeline.py`) that processes intersection CCTV feeds to autonomously detect parked vehicles, calculate dwell times, and flag persistent carriageway obstructions, effectively closing the evening enforcement blind spot.
 
 ---
 
@@ -32,7 +33,7 @@ It ships as a one-command local Streamlit app featuring an interactive MapmyIndi
 **One-command quickstart:**
 ```bash
 # from the project root
-./run.sh
+python run.py all
 ```
 
 That script: creates `.venv`, installs pinned deps, runs the full analysis pipeline (`src/01…08`), then launches the beautiful dark-themed UI at **http://localhost:8501**.
@@ -87,18 +88,22 @@ Patrol Recommendation Dashboard
 
 ---
 
-## 🛡️ Honest Limitations
+## 🛡️ Honest Limitations & Future Roadmap
 - **Congestion impact relies on a proxy model** — We mitigated this limitation by building the live MapmyIndia validation feature to prove the proxy strongly correlates with reality.
 - **Hour-of-day reflects the enforcement-recording window**, not true diurnal demand (evenings are under-observed). We flag this evening gap as an operational finding.
 - **No dwell-time** — we can't measure how long vehicles stayed based solely on the ticket timestamps.
 - **Selection bias** — the data is *where enforcement looked*; absence of a ticket does not guarantee absence of a violation.
 
+**🚀 Roadmap Solution (CV Pipeline):** To permanently close the "evening gap" and solve the "dwell-time" and "selection bias" limitations, we have architected a prototype **YOLOv8 Computer Vision Pipeline** (`07_cv_pipeline.py`) capable of running on continuous intersection CCTV feeds to autonomously detect and flag parking violations regardless of patrol shifts.
+
 ---
 
-## 🛠️ Mapping & Routing Tech Stack
+## 🛠️ Mapping, Routing & CV Tech Stack
 - **MapmyIndia Routing API**
   - Use cases: route-level impact estimation, last-mile delay calculation, what-if comparison for cleared zones, and enforcement planning support.
+- **YOLOv8 & OpenCV (CV Pipeline)**
+  - Use cases: automated vehicle tracking and dwell-time calculation from CCTV feeds.
 
 ```text
-Built with MapmyIndia APIs · pandas · scikit-learn · folium · plotly · Streamlit.
+Built with MapmyIndia APIs · YOLOv8 · pandas · scikit-learn · folium · plotly · Streamlit.
 ```
